@@ -711,8 +711,15 @@ def determine_gl_flags():
             gl_libs = ['EGL', 'GLESv2']
         flags['libraries'] = ['bcm_host'] + gl_libs
     elif platform in ['mali', 'vc']:
-        flags['include_dirs'] = ['/usr/include/']
-        flags['library_dirs'] = ['/usr/lib/arm-linux-gnueabihf']
+        if not cross_sysroot:
+            flags['include_dirs'] = ['/usr/include/']
+            flags['library_dirs'] = ['/usr/lib/arm-linux-gnueabihf']
+        else:
+            flags['include_dirs'] = [cross_sysroot + '/usr/include/']
+            flags['library_dirs'] = [
+                cross_sysroot + '/usr/lib/arm-linux-gnueabihf',
+                cross_sysroot + '/usr/lib'
+            ]
         flags['libraries'] = ['GLESv2']
         c_options['use_x11'] = True
         c_options['use_egl'] = True
